@@ -1,0 +1,213 @@
+definitions:
+  controllers.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  user.UserLoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.UserRegisterInput:
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - firstName
+    - lastName
+    - password
+    - username
+    type: object
+info:
+  contact: {}
+paths:
+  /accounts:
+    get:
+      consumes:
+      - application/json
+      description: Get Balances
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Balances
+      tags:
+      - Account
+  /accounts/{first_currency}/{second_currency}/{amount}/conversion:
+    post:
+      consumes:
+      - application/json
+      description: Post Currency Conversion
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: First Currency
+        in: path
+        name: first_currency
+        required: true
+        type: string
+      - description: Second Currency
+        in: path
+        name: second_currency
+        required: true
+        type: string
+      - description: Amount
+        in: path
+        name: amount
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Post Currency Conversion
+      tags:
+      - Account
+  /accounts/{first_currency}/{second_currency}/rate:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint is used to get currency conversion rate
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: First Currency
+        in: path
+        name: first_currency
+        required: true
+        type: string
+      - description: Second Currency
+        in: path
+        name: second_currency
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get currency conversion rate
+      tags:
+      - Account
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register
+      parameters:
+      - description: Register Input
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserRegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.Response'
+      summary: Register
+      tags:
+      - User
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Login Input
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserLoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.Response'
+      summary: Login
+      tags:
+      - User
+swagger: "2.0"
