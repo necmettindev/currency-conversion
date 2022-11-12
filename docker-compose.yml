@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  database:
+    container_name: database
+    env_file:
+      - .env
+    image: postgres:11.18-alpine3.16
+    restart: always
+    environment:
+      - POSTGRES_USER={$DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  cache:
+    image: redis:7.0.5-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - cache:/data    
+  app:
+    container_name: app
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/opt/app/api
+    depends_on:
+      - database
+      - cache
+    command: air main.go -b 0.0.0.0   
+    links:
+      - database
+      - cache
+    networks:
+      - default  
+volumes:
+  data:
+    driver: local
+  cache:
+    driver: local
+networks:
+  new:    
+
